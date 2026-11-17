@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101116">
+<title>Project Portal</title>
+<style>
+:root{color-scheme:dark;--bg:#101116;--panel:#1b1d25;--muted:#a8adba;--text:#f7f7fa;--line:#373b46;--accent:#7564f5;--accent2:#c14fd1}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+.screen{display:none;min-height:100vh;padding:26px 22px;flex-direction:column;align-items:center}
+.screen.active{display:flex}
+.top{width:min(100%,470px);display:flex;justify-content:flex-end}
+.brand{margin:auto 0 38px;text-align:center}
+.mark{width:88px;height:88px;border-radius:27px;margin:0 auto 22px;background:linear-gradient(145deg,var(--accent),var(--accent2));display:grid;place-items:center;box-shadow:0 12px 40px #755df344}
+.mark svg{width:49px;height:49px}
+h1{font-size:27px;margin:0 0 10px}
+.sub{color:var(--muted);font-size:15px;line-height:1.5;margin:0}
+.panel{width:min(100%,470px);margin:0 auto auto;background:var(--panel);border:1px solid #292d37;border-radius:22px;padding:24px}
+label{display:block;font-size:14px;color:#e0e2e9;margin:0 0 9px}
+input{width:100%;padding:17px 16px;margin:0 0 19px;border:1px solid var(--line);border-radius:13px;background:#12141a;color:white;font-size:16px;outline:none}
+input:focus{border-color:#9185ff;box-shadow:0 0 0 3px #7564f522}
+button{width:100%;border:0;border-radius:30px;background:linear-gradient(100deg,var(--accent),var(--accent2));color:#fff;font-size:17px;font-weight:700;padding:16px;cursor:pointer}
+.foot{margin-top:auto;padding-top:32px;color:#858b98;font-size:12px;text-align:center;line-height:1.5}
+.loading-wrap{width:min(100%,470px);margin:auto;text-align:center}
+.spinner{width:72px;height:72px;border:6px solid #303440;border-top-color:#8d7dff;border-right-color:#d45fca;border-radius:50%;margin:0 auto 26px;animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.progress-card{margin-top:30px;padding:21px;background:var(--panel);border:1px solid #2d313c;border-radius:18px;text-align:left}
+.progress-head,.metrics{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.progress-head{font-weight:700;margin-bottom:15px}
+.progress-head span,.metrics{font-size:13px;color:#c2c6d0}
+.track{height:12px;background:#363b47;border-radius:20px;overflow:hidden}
+.bar{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:20px;transition:width .25s}
+.metrics{margin-top:13px}
+.caption{font-size:12px;color:#9ba1ae;line-height:1.5;margin:16px 0 0}
+.back{display:inline-block;margin-top:20px;color:#c7c1ff;text-decoration:none;font-size:14px}
+@media(max-height:680px){.brand{margin:36px 0 25px}.foot{padding-top:22px}}
+</style>
+</head>
+<body>
+<section class="screen" id="entry">
+  <div class="top"></div>
+  <div class="brand">
+    <div class="mark" aria-hidden="true">
+      <svg viewBox="0 0 48 48" fill="none"><path d="M8 17.5 24 8l16 9.5v13L24 40 8 30.5v-13Z" stroke="white" stroke-width="3" stroke-linejoin="round"/><path d="m8.5 17.8 15.5 9 15.5-9M24 27v12" stroke="white" stroke-width="3" stroke-linecap="round"/></svg>
+    </div>
+    <h1>Project Portal</h1>
+    <p class="sub">Enter your project ID to continue</p>
+  </div>
+  <form class="panel" id="entryForm">
+    <label for="projectId">Project ID</label>
+    <input id="projectId" type="text" placeholder="Enter project ID" autocomplete="off" required>
+    <button type="submit">Continue</button>
+    <p class="caption">This is an independent project portal. It is not Instagram or affiliated with Meta. The project ID is used only in this browser session and is not sent to a server.</p>
+  </form>
+  <div class="foot">Project Portal</div>
+</section>
+
+<section class="screen" id="opening">
+  <div class="top"></div>
+  <div class="loading-wrap">
+    <div class="spinner" aria-hidden="true"></div>
+    <h1 id="statusTitle">Opening your workspace...</h1>
+    <p class="sub">Preparing your project interface</p>
+    <div class="progress-card">
+      <div class="progress-head"><strong>Preparing workspace</strong><span id="percent">0%</span></div>
+      <div class="track"><div class="bar" id="bar"></div></div>
+      <div class="metrics"><span id="state">Starting...</span><span id="remaining">Please wait</span></div>
+    </div>
+    <p class="caption">This progress indicator represents interface loading only. No 8 GB file is being downloaded.</p>
+    <a class="back" href="./">Back to project portal</a>
+  </div>
+  <div class="foot">Project Portal</div>
+</section>
+
+<script>
+const params=new URLSearchParams(location.search);
+const opening=params.get('page')==='opening';
+document.getElementById('entry').classList.toggle('active',!opening);
+document.getElementById('opening').classList.toggle('active',opening);
+
+document.getElementById('entryForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  // Do not store, read, or transmit the entered project ID.
+  location.href='?page=opening';
+});
+
+if(opening){
+  let value=0;
+  const bar=document.getElementById('bar');
+  const percent=document.getElementById('percent');
+  const state=document.getElementById('state');
+  const remaining=document.getElementById('remaining');
+  const timer=setInterval(()=>{
+    value=Math.min(100,value+2);
+    bar.style.width=value+'%';
+    percent.textContent=value+'%';
+    state.textContent=value<35?'Initializing...':value<75?'Loading interface...':value<100?'Finishing setup...':'Ready';
+    remaining.textContent=value<100?'Please wait':'Complete';
+    if(value===100){
+      clearInterval(timer);
+      document.getElementById('statusTitle').textContent='Workspace ready';
+    }
+  },400);
+}
+</script>
+</body>
+</html>
