@@ -3,113 +3,131 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#101014">
-<title>Instagram Account Portal</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Account Portal</title>
 <style>
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+*{box-sizing:border-box}
+body{
+ margin:0;
+ min-height:100vh;
+ background:#101014;
+ color:white;
+ font-family:Arial,sans-serif;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ padding:22px;
 }
-
-body {
-  min-height: 100vh;
-  background: #101014;
-  color: #fff;
-  font-family: Arial, sans-serif;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 25px;
+.container{
+ width:100%;
+ max-width:420px;
+ text-align:center;
 }
-
-.container {
-  width: 100%;
-  max-width: 420px;
-  text-align: center;
+.logo{
+ width:90px;height:90px;
+ margin:0 auto 25px;
+ border-radius:25px;
+ background:linear-gradient(45deg,#ffd776,#ff543e,#c837ab,#515bd4);
+ display:grid;place-items:center;
+ font-size:60px;
 }
-
-.logo {
-  width: 105px;
-  height: 105px;
-  margin: 0 auto 30px;
-  border-radius: 27px;
-  background: linear-gradient(
-    45deg,
-    #ffd776,
-    #ff543e,
-    #c837ab,
-    #515bd4
-  );
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 75px;
-  font-weight: 300;
+h1{font-size:27px}
+p{color:#aaa;line-height:1.7}
+input{
+ width:100%;padding:17px;
+ margin:20px 0;
+ background:#19191f;
+ border:1px solid #41414b;
+ border-radius:12px;
+ color:white;font-size:16px;
 }
-
-h1 {
-  font-size: 30px;
-  margin-bottom: 15px;
+button{
+ width:100%;padding:17px;
+ border:0;border-radius:12px;
+ background:#2879ed;color:white;
+ font-size:17px;font-weight:bold;
+ cursor:pointer;
 }
-
-.description {
-  color: #aaa;
-  font-size: 16px;
-  line-height: 1.7;
-  margin-bottom: 40px;
+#home{display:none}
+.info{
+ background:#19191f;
+ border:1px solid #35353d;
+ padding:20px;
+ border-radius:15px;
+ margin:25px 0;
 }
-
-button {
-  width: 100%;
-  padding: 18px;
-  background: #2879ed;
-  color: white;
-  border: none;
-  border-radius: 14px;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-button:active {
-  opacity: .8;
-}
-
-.footer {
-  color: #888;
-  font-size: 13px;
-  line-height: 1.6;
-  margin-top: 28px;
-}
+a{color:#75aaff;text-decoration:none}
+.footer{font-size:12px;margin-top:25px}
 </style>
 </head>
-
 <body>
 
 <div class="container">
 
+ <section id="login">
   <div class="logo">◎</div>
-
   <h1>Account Portal</h1>
+  <p>Enter your username to continue.</p>
 
-  <p class="description">
-    Access Instagram's official platform
-    to manage your account and personal information.
+  <form id="accountForm">
+   <input id="username"
+    placeholder="Enter Instagram username"
+    maxlength="30" required>
+   <button type="submit">Continue</button>
+  </form>
+
+  <p class="footer">
+   No password is collected or stored.
   </p>
+ </section>
 
-  <button onclick="window.location.href='https://www.instagram.com/'">
-    Continue to Instagram
-  </button>
+ <section id="home">
+  <div class="logo">◎</div>
+  <h1 id="welcome">Welcome!</h1>
+  <p>Your account access page is ready.</p>
 
-  <div class="footer">
-    Secure official Instagram access.<br>
-    No login credentials are collected or stored here.
+  <div class="info">
+   <h3>Instagram Data Export</h3>
+   <p>
+    Request your account information securely
+    through Instagram's official platform.
+   </p>
+   <a href="https://www.instagram.com/"
+      target="_blank" rel="noopener">
+      Open Official Instagram
+   </a>
   </div>
 
+  <button onclick="window.location.href='https://www.instagram.com/'">
+   Continue to Instagram
+  </button>
+
+  <p class="footer">
+   Account information is managed by Instagram.
+  </p>
+ </section>
+
 </div>
+
+<script>
+document.getElementById("accountForm")
+.addEventListener("submit",function(e){
+ e.preventDefault();
+
+ const username=document
+  .getElementById("username")
+  .value.trim()
+  .replace(/^@/,'');
+
+ if(!username)return;
+
+ document.getElementById("welcome").textContent=
+  "Welcome to @"+username;
+
+ document.getElementById("login").style.display="none";
+ document.getElementById("home").style.display="block";
+});
+</script>
 
 </body>
 </html>
